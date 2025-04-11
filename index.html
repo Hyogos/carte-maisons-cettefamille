@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Carte des Maisons - CetteFamille</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 100vh; }
+    .legend { background: white; padding: 10px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+
+  <script>
+    const maisons = [
+      {
+        nom: "Maison de la Forêt",
+        adresse: "4 rue des Chênes, 72000 Le Mans",
+        type: "Perte d'autonomie",
+        telephone: "02 43 01 02 03",
+        coords: [48.0077, 0.1984]
+      },
+      {
+        nom: "Résidence Clairefontaine",
+        adresse: "17 avenue de la Mer, 14000 Caen",
+        type: "Troubles cognitifs",
+        telephone: "02 31 45 67 89",
+        coords: [49.1833, -0.35]
+      },
+      {
+        nom: "Maison du Parc",
+        adresse: "22 allée des Pins, 33000 Bordeaux",
+        type: "Perte d'autonomie",
+        telephone: "05 56 12 34 56",
+        coords: [44.8378, -0.5792]
+      },
+      {
+        nom: "L’Olivier",
+        adresse: "12 rue de l’Église, 84000 Avignon",
+        type: "Troubles cognitifs",
+        telephone: "04 90 11 22 33",
+        coords: [43.9493, 4.8055]
+      },
+      {
+        nom: "Les Mimosas",
+        adresse: "5 impasse du Midi, 06600 Antibes",
+        type: "Perte d'autonomie",
+        telephone: "04 93 44 55 66",
+        coords: [43.5804, 7.1251]
+      }
+    ];
+
+    const map = L.map('map').setView([46.8, 2.5], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
+      attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    const iconCognitif = L.icon({
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/3774/3774299.png',
+      iconSize: [32, 32]
+    });
+
+    const iconAutonomie = L.icon({
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/685/685655.png',
+      iconSize: [32, 32]
+    });
+
+    maisons.forEach(m => {
+      L.marker(m.coords, {
+        icon: m.type === "Troubles cognitifs" ? iconCognitif : iconAutonomie
+      }).addTo(map)
+      .bindPopup(`
+        <strong>${m.nom}</strong><br>
+        📍 ${m.adresse}<br>
+        🏷️ ${m.type}<br>
+        📞 ${m.telephone}
+      `);
+    });
+
+    L.Routing.control({
+      waypoints: [
+        L.latLng(48.85, 2.35), // Paris
+        L.latLng(44.8378, -0.5792) // Bordeaux
+      ],
+      routeWhileDragging: true
+    }).addTo(map);
+  </script>
+</body>
+</html>
